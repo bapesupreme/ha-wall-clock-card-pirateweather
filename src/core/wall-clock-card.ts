@@ -21,7 +21,7 @@ import { WallClockConfig, Size } from './types';
 declare const PACKAGE_VERSION: string;
 
 
-@customElement('wall-clock-card')
+@customElement('wall-clock-card-pirateweather')
 export class WallClockCard extends LitElement {
     @property({type: Object}) hass?: HomeAssistant;
     @property({type: Object}) config: WallClockConfig = {};
