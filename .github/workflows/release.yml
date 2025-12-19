@@ -13,7 +13,7 @@ jobs:
       # Build
       - name: Build the file
         run: |
-          cd /home/runner/work/ha-wall-clock-card/ha-wall-clock-card
+          cd /home/runner/work/ha-wall-clock-card-pirateweather/ha-wall-clock-card-pirateweather
           yarn install
           npm run build
       # Upload build file to the release as an asset.
@@ -21,7 +21,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: /home/runner/work/ha-wall-clock-card/ha-wall-clock-card/dist/wall-clock-card-pirate-weather.js
+          file: /home/runner/work/ha-wall-clock-card-pirateweather/ha-wall-clock-card-pirateweather/dist/wall-clock-card-pirateweather.js
           asset_name: wall-clock-card-pirateweather.js
           tag: ${{ github.ref }}
           overwrite: true
