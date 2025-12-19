@@ -9,7 +9,7 @@ const isAnalyze = process.argv.includes('--analyze');
 module.exports = {
   entry: './src/index.ts',
   output: {
-    filename: 'wall-clock-card.js',
+    filename: 'wall-clock-card-pirate-weather.js',
     path: path.resolve(__dirname, 'dist'),
   },
   mode: 'production',
