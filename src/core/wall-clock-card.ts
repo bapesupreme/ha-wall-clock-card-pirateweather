@@ -591,7 +591,20 @@ if (!customElements.get('wall-clock-card-pirateweather')) {
     customElements.define('wall-clock-card-pirateweather', WallClockCard);
 }
 
-// Add card to window.customCards for Home Assistant card picker
+// Add card to window for type checking
+declare global {
+    interface Window {
+        customCards: any[];
+    }
+}
+
+// The @customElement decorator should register it, but let's be explicit
+// Check if already registered to avoid errors on hot reload
+if (!customElements.get('wall-clock-card-pirateweather')) {
+    customElements.define('wall-clock-card-pirateweather', WallClockCard);
+}
+
+// Register with Home Assistant's card picker
 window.customCards = window.customCards || [];
 window.customCards.push({
     type: 'wall-clock-card-pirateweather',
@@ -603,7 +616,7 @@ window.customCards.push({
 
 // Log successful registration
 logger.info(
-    "%c WALL-CLOCK-CARD-PIRATEWEATHER %c Registered with Home Assistant ",
+    "%c WALL-CLOCK-CARD-PIRATEWEATHER %c Successfully Registered ",
     "color: white; background: #27ae60; font-weight: 700;",
     "color: #27ae60; background: white; font-weight: 700;"
 );
