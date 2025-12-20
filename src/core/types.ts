@@ -39,7 +39,7 @@ export interface WallClockConfig {
 
     // Weather forecast settings
     showWeather?: boolean; // Whether to show weather forecast
-    weatherProvider?: string; // ID of the weather provider plugin ('openweathermap', etc.)
+    weatherProvider?: string; // ID of the weather provider plugin ('openweathermap', 'pirateweather', etc.)
     weatherConfig?: WeatherProviderConfig; // Configuration for the weather provider
     weatherDisplayMode?: 'current' | 'forecast' | 'both'; // What weather data to display
     weatherForecastDays?: number; // Number of days to show in forecast (1-7)
@@ -55,6 +55,7 @@ export interface WallClockConfig {
     // Allow string indexing for dynamic property access
     [key: string]: any;
 }
+
 export interface WallClockCardConfig {
     type: string;
     name?: string;
@@ -130,22 +131,38 @@ export enum Size {
     Custom = 'custom',
 }
 
-// Type definitions
+// Updated Weather Data Types - matches actual provider responses
 export type WeatherData = {
     current: {
-        temp: number;
+        temperature: number;
+        feelsLike: number;
         condition: string;
         conditionUnified: Weather;
         icon: string;
+        humidity: number;
+        pressure: number;
+        windSpeed: number;
+        windDirection: string;
     };
-    forecast: {
-        date: Date;
-        tempMin: number;
-        tempMax: number;
-        condition: string;
-        icon: string;
-    }[];
+    daily: DailyWeather[];
 };
+
+export interface DailyWeather {
+    date: Date;
+    temperatureMax: number;
+    temperatureMin: number;
+    condition: string;
+    conditionUnified: Weather;
+    icon: string;
+    humidity: number;
+    pressure: number;
+    windSpeed: number;
+    windGust?: number;
+    windBearing?: number;
+    cloudCover?: number;
+    uvIndex?: number;
+    precipitation?: number; // Precipitation probability (0-100)
+}
 
 export type TransportationData = {
     stops: {
