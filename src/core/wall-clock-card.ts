@@ -586,10 +586,24 @@ declare global {
     }
 }
 
-// Add card to window.customCards
+// Register the custom element if not already registered
+if (!customElements.get('wall-clock-card-pirateweather')) {
+    customElements.define('wall-clock-card-pirateweather', WallClockCard);
+}
+
+// Add card to window.customCards for Home Assistant card picker
 window.customCards = window.customCards || [];
 window.customCards.push({
     type: 'wall-clock-card-pirateweather',
     name: 'Wall Clock Card Pirate Weather',
-    description: 'A card that displays a clock with seconds and the current date',
+    description: 'A beautiful clock card with weather forecast, sensors, transportation info, and dynamic backgrounds',
+    preview: true, // Enables preview in the card picker
+    documentationURL: 'https://github.com/rkotulan/ha-wall-clock-card'
 });
+
+// Log successful registration
+logger.info(
+    "%c WALL-CLOCK-CARD-PIRATEWEATHER %c Registered with Home Assistant ",
+    "color: white; background: #27ae60; font-weight: 700;",
+    "color: #27ae60; background: white; font-weight: 700;"
+);
