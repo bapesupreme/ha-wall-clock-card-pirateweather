@@ -2,6 +2,21 @@ import { WeatherProvider, WeatherData, WeatherProviderConfig } from './types';
 import { Weather } from '../image-sources';
 
 // Define DailyWeather locally since it's not exported from types
+interface DailyWeather {
+    date: Date;
+    temperatureMax: number;
+    temperatureMin: number;
+    condition: string;
+    conditionUnified: Weather;
+    icon: string;
+    humidity: number;
+    pressure: number;
+    windSpeed: number;
+    windGust?: number;
+    windBearing: number;
+    cloudCover: number;
+    uvIndex: number;
+}
 
 interface PirateWeatherCurrently {
     time: number;
@@ -16,7 +31,6 @@ interface PirateWeatherCurrently {
     windBearing: number;
     cloudCover: number;
     uvIndex: number;
-    visibility: number;
 }
 
 interface PirateWeatherDaily {
@@ -50,22 +64,6 @@ interface PirateWeatherResponse {
     };
 }
 
-interface DailyWeather {
-    date: Date;
-    temperatureMax: number;
-    temperatureMin: number;
-    condition: string;
-    conditionUnified: Weather;
-    icon: string;
-    humidity: number;
-    pressure: number;
-    windSpeed: number;
-    windGust?: number;
-    windBearing: number;
-    cloudCover: number;
-    uvIndex: number;
-}
-
 export class PirateWeatherProvider implements WeatherProvider {
     readonly id = 'pirateweather';
     readonly name = 'Pirate Weather';
@@ -77,7 +75,7 @@ export class PirateWeatherProvider implements WeatherProvider {
             apiKey: '',
             latitude: 0,
             longitude: 0,
-            units: 'metric' // Changed from 'us' to 'metric'
+            units: 'metric'
         };
     }
 
@@ -136,16 +134,15 @@ export class PirateWeatherProvider implements WeatherProvider {
 
         return {
             current: {
-                temperature: currently.temperature,
-                feelsLike: currently.apparentTemperature,
+                temperature: Math.round(currently.temperature), // Round temperature
+                feelsLike: Math.round(currently.apparentTemperature), // Round feels like
                 condition: this.formatCondition(currently.summary),
                 conditionUnified: conditionUnified,
                 icon: currentIcon,
-                humidity: currently.humidity * 100, // Convert from 0-1 to 0-100
-                pressure: currently.pressure,
-                windSpeed: currently.windSpeed,
-                windDirection: windDirection,
-                uvIndex: currently.uvIndex
+                humidity: Math.round(currently.humidity * 100), // Convert from 0-1 to 0-100 and round
+                pressure: Math.round(currently.pressure), // Round pressure
+                windSpeed: Math.round(currently.windSpeed * 10) / 10, // Round to 1 decimal
+                windDirection: windDirection
             },
             daily: daily.slice(0, 7).map(day => this.transformDailyWeather(day))
         };
@@ -154,17 +151,17 @@ export class PirateWeatherProvider implements WeatherProvider {
     private transformDailyWeather(day: PirateWeatherDaily): DailyWeather {
         return {
             date: new Date(day.time * 1000),
-            temperatureMax: day.temperatureMax || day.temperatureHigh,
-            temperatureMin: day.temperatureMin || day.temperatureLow,
+            temperatureMax: Math.round(day.temperatureMax || day.temperatureHigh),
+            temperatureMin: Math.round(day.temperatureMin || day.temperatureLow),
             condition: this.formatCondition(day.summary),
             conditionUnified: this.mapIconToCondition(day.icon),
             icon: this.getIconUrl(day.icon),
-            humidity: day.humidity * 100,
-            pressure: day.pressure,
-            windSpeed: day.windSpeed,
-            windGust: day.windGust,
+            humidity: Math.round(day.humidity * 100),
+            pressure: Math.round(day.pressure),
+            windSpeed: Math.round(day.windSpeed * 10) / 10,
+            windGust: day.windGust ? Math.round(day.windGust * 10) / 10 : undefined,
             windBearing: day.windBearing,
-            cloudCover: day.cloudCover * 100,
+            cloudCover: Math.round(day.cloudCover * 100),
             uvIndex: day.uvIndex
         };
     }
@@ -206,25 +203,25 @@ export class PirateWeatherProvider implements WeatherProvider {
      * Get icon URL for a given icon code
      */
     private getIconUrl(icon: string): string {
-        const baseIconUrl = 'https://raw.githubusercontent.com/manifestinteractive/weather-underground-icons/master/dist/icons/white/png/64x64';
-        
+        // Use OpenWeatherMap icons for consistency with existing UI
         const iconMapping: Record<string, string> = {
-            'clear-day': `${baseIconUrl}/clear.png`,
-            'clear-night': `${baseIconUrl}/nt_clear.png`,
-            'rain': `${baseIconUrl}/rain.png`,
-            'snow': `${baseIconUrl}/snow.png`,
-            'sleet': `${baseIconUrl}/sleet.png`,
-            'wind': `${baseIconUrl}/wind.png`,
-            'fog': `${baseIconUrl}/fog.png`,
-            'cloudy': `${baseIconUrl}/cloudy.png`,
-            'partly-cloudy-day': `${baseIconUrl}/partlycloudy.png`,
-            'partly-cloudy-night': `${baseIconUrl}/nt_partlycloudy.png`,
-            'hail': `${baseIconUrl}/sleet.png`,
-            'thunderstorm': `${baseIconUrl}/tstorms.png`,
-            'tornado': `${baseIconUrl}/tornado.png`
+            'clear-day': '01d',
+            'clear-night': '01n',
+            'rain': '10d',
+            'snow': '13d',
+            'sleet': '13d',
+            'wind': '50d',
+            'fog': '50d',
+            'cloudy': '04d',
+            'partly-cloudy-day': '02d',
+            'partly-cloudy-night': '02n',
+            'hail': '09d',
+            'thunderstorm': '11d',
+            'tornado': '50d'
         };
 
-        return iconMapping[icon] || `${baseIconUrl}/cloudy.png`;
+        const mappedIcon = iconMapping[icon] || '01d';
+        return `https://openweathermap.org/img/wn/${mappedIcon}@2x.png`;
     }
 
     /**
