@@ -591,6 +591,8 @@ if (!customElements.get('wall-clock-card-pirateweather')) {
     customElements.define('wall-clock-card-pirateweather', WallClockCard);
 }
 
+}  // <-- This closes your WallClockCard class
+
 // Add card to window for type checking
 declare global {
     interface Window {
@@ -598,8 +600,7 @@ declare global {
     }
 }
 
-// The @customElement decorator should register it, but let's be explicit
-// Check if already registered to avoid errors on hot reload
+// Explicit registration (backup to @customElement decorator)
 if (!customElements.get('wall-clock-card-pirateweather')) {
     customElements.define('wall-clock-card-pirateweather', WallClockCard);
 }
@@ -610,11 +611,11 @@ window.customCards.push({
     type: 'wall-clock-card-pirateweather',
     name: 'Wall Clock Card Pirate Weather',
     description: 'A beautiful clock card with weather forecast, sensors, transportation info, and dynamic backgrounds',
-    preview: true, // Enables preview in the card picker
+    preview: true,
     documentationURL: 'https://github.com/rkotulan/ha-wall-clock-card'
 });
 
-// Log successful registration
+// Confirmation log
 logger.info(
     "%c WALL-CLOCK-CARD-PIRATEWEATHER %c Successfully Registered ",
     "color: white; background: #27ae60; font-weight: 700;",
