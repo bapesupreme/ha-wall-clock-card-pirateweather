@@ -591,8 +591,6 @@ if (!customElements.get('wall-clock-card-pirateweather')) {
     customElements.define('wall-clock-card-pirateweather', WallClockCard);
 }
 
-}  // <-- This closes your WallClockCard class
-
 // Add card to window for type checking
 declare global {
     interface Window {
