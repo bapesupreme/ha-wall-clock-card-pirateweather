@@ -15,8 +15,6 @@ import {
   configureLogger,
   getLogLevelFromString,
   logger,
-  LogLevel,
-  ExtendedDateTimeFormatOptions,
   loadTranslationsAsync
 } from '../utils';
 
@@ -33,7 +31,7 @@ import '../editors';
 import '../components/ha-selector';
 
 import { Messenger, WeatherMessage } from '../utils';
-import { WallClockConfig, Size } from './types';
+import { WallClockConfig } from './types';
 
 // Webpack injects this constant
 declare const PACKAGE_VERSION: string;
